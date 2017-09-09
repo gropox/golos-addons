@@ -2,28 +2,54 @@ const debug = require("debug");
 let APP_NAME = "";
 
 function setAppName(an) {
-    APP_NAME = an + ":";
+    APP_NAME = an;
+}
+
+function getNameSpace(file) {
+    let appfile = "";
+    if(file) {
+        appfile = ":" + file;
+    }
+    return APP_NAME + appfile;
 }
 
 module.exports.debug = function(file) {
-    return debug(APP_NAME + file + ":dbg");
+    return debug(getNameSpace(file) + ":dbg");
 };
 
 module.exports.error = function(file) {
-    return debug(APP_NAME + file + ":err");
+    return debug(getNameSpace(file) + ":err");
 };
 
 module.exports.info = function(file) {
-    return debug(APP_NAME + file + ":inf");
+    return debug(getNameSpace(file) + ":inf");
 };
 
 module.exports.trace = function(file) {
-    return debug(APP_NAME + file + ":trc");
+    return debug(getNameSpace(file) + ":trc");
 };
 
 let BROADCAST = false;
 let DEBUG = false;
 let TRACE = false;
+
+function updateDebugNamespace() {
+    if(typeof process.env.DEBUG == "undefined") {
+        let dbgNamespace = `${getNameSpace()}*:err,${getNameSpace()}*:wrn,${getNameSpace()}*:inf`;
+        if(DEBUG) {
+            dbgNamespace += `,${getNameSpace()}*:dbg`;
+        }
+        if(TRACE) {
+            dbgNamespace += `,${getNameSpace()}*:trc`;
+        }
+        require("debug").enable(dbgNamespace);
+    }    
+}
+
+module.exports.enableDebug = function() {
+    DEBUG = true;
+    updateDebugNamespace();
+}
 
 module.exports.initApp = function(appName) {
     setAppName(appName);
@@ -42,15 +68,5 @@ module.exports.initApp = function(appName) {
             break;
         }
     }
-
-    if(typeof process.env.DEBUG == "undefined") {
-        let dbgNamespace = "reward:err,reward:wrn,reward:inf";
-        if(DEBUG) {
-            dbgNamespace += ",reward:dbg";
-        }
-        if(TRACE) {
-            dbgNamespace += ",reward:trc";
-        }
-        require("debug").enable(dbgNamespace);
-    }
+    updateDebugNamespace();
 }
