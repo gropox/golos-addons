@@ -33,6 +33,8 @@ let BROADCAST = false;
 let DEBUG = false;
 let TRACE = false;
 
+module.exports.broadcast = BROADCAST;
+
 function updateDebugNamespace() {
     if(typeof process.env.DEBUG == "undefined") {
         let dbgNamespace = `${getNameSpace()}*:err,${getNameSpace()}*:wrn,${getNameSpace()}*:inf`;

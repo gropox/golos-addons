@@ -1,6 +1,5 @@
 const global = require("./global");
 const golos = require("golos-js");
-module.exports.golos = golos;
 const debug = global.debug("golos");
 const info = global.debug("golos");
 const error = global.debug("golos");
@@ -179,7 +178,7 @@ function repLog10(rep2) {
 module.exports.transfer = async function(wif, userid, receiver, amount, memo) {
     info("transfer " + receiver + ", " + amount + ", [" + memo + "]" );
 
-    if(global.settings.broadcast) {
+    if(global.broadcast) {
         info("\tbroadcasting transfer");    
         await golos.broadcast.transferAsync(wif, userid, 
             receiver, amount, memo);
@@ -192,7 +191,7 @@ module.exports.transfer = async function(wif, userid, receiver, amount, memo) {
 module.exports.transferToVesting = async function(key, from, to, amount) {
     info("transfer to vesting " + to + ", " + amount );
 
-    if(global.settings.broadcast) {
+    if(global.broadcast) {
         info("\tbroadcasting transfer to karma");    
         await golos.broadcast.transferToVestingAsync(key, from, to, amount);
     } else {
@@ -209,3 +208,4 @@ module.exports.getAccount = getAccount;
 module.exports.getContent = getContent;
 module.exports.getReputation = getReputation;
 module.exports.getGolosPrice = getGolosPrice;
+module.exports.golos = golos;
