@@ -1,4 +1,6 @@
 const debug = require("debug");
+const fs = require("fs");
+
 let APP_NAME = "";
 
 function setAppName(an) {
@@ -27,6 +29,10 @@ module.exports.info = function(file) {
 
 module.exports.trace = function(file) {
     return debug(getNameSpace(file) + ":trc");
+};
+
+module.exports.warn = function(file) {
+    return debug(getNameSpace(file) + ":wrn");
 };
 
 let BROADCAST = false;
@@ -59,7 +65,7 @@ module.exports.initApp = function(appName) {
     for(let val of process.argv) {
         switch(val) {
         case "broadcast" :
-            BROADCAST = true;
+            module.exports.broadcast = true;
             break;
         case "debug" :
             DEBUG = true;
@@ -71,4 +77,31 @@ module.exports.initApp = function(appName) {
         }
     }
     updateDebugNamespace();
+    loadConfig();
 }
+
+let CONFIG = {};
+module.exports.CONFIG = CONFIG;
+
+function getConfigDir() {
+    if(process.env.CONFIGDIR) {
+        return process.env.CONFIGDIR;
+    } else {
+        return ".";
+    }
+}
+
+function loadConfig() {
+    const CONFIG_DIR = getConfigDir();
+    const CONFIG_FILE = CONFIG_DIR + "/config.json";
+    try {
+        if(fs.existsSync(CONFIG_FILE)) {
+            let sets = JSON.parse(fs.readFileSync(CONFIG_FILE, "utf8"));
+            for(var k in sets) CONFIG[k]=sets[k];
+        }                
+    } catch(e) {
+        console.error("unable to read config (" + CONFIG_FILE + ")");
+        console.error(e);
+    }
+}
+

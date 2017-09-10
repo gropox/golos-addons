@@ -199,6 +199,21 @@ module.exports.transferToVesting = async function(key, from, to, amount) {
     }
 }
 
+module.exports.getExceptionCause = function(e) {
+    if(e.cause && e.cause.payload && e.cause.payload.error) {
+        let m = e.cause.payload.error.message; 
+        if(m) {
+            let am = m.split("\n");
+            m = am[0];
+            for(let i = 1; i < am.length && i < 3; i++) {
+                m += ": " + am[i];
+            }
+            return m;
+        }
+    }
+    return e;
+}
+
 module.exports.getCurrentServerTimeAndBlock = getCurrentServerTimeAndBlock;
 module.exports.scanUserHistory = scanUserHistory;
 module.exports.getUserGests = getUserGests;
