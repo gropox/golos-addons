@@ -24,7 +24,8 @@ async function getCurrentServerTimeAndBlock() {
         trace("lastCommitedBlock = " + lastCommitedBlock + ", headBlock = " + props.head_block_number);
         return {
             time : Date.parse(props.time), 
-            block : lastCommitedBlock 
+            block : props.head_block_number,
+            commited_block :  props.last_irreversible_block_num
         };
     }
     throw "Current time could not be retrieved";
