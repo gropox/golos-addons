@@ -15,6 +15,16 @@ function getNameSpace(file) {
     return APP_NAME + appfile;
 }
 
+module.exports.getLogger = function (file) {
+    return {
+        debug : debug(getNameSpace(file) + ":dbg"),
+        error : debug(getNameSpace(file) + ":err"),
+        info : debug(getNameSpace(file) + ":inf"),
+        trace : debug(getNameSpace(file) + ":trc"),
+        warn : debug(getNameSpace(file) + ":wrn")
+    };
+}
+
 module.exports.debug = function(file) {
     return debug(getNameSpace(file) + ":dbg");
 };
@@ -43,12 +53,12 @@ module.exports.broadcast = BROADCAST;
 
 function updateDebugNamespace() {
     if(typeof process.env.DEBUG == "undefined") {
-        let dbgNamespace = `${getNameSpace()}*:err,${getNameSpace()}*:wrn,${getNameSpace()}*:inf`;
+        let dbgNamespace = `*:err,*:wrn,*:inf`;
         if(DEBUG) {
-            dbgNamespace += `,${getNameSpace()}*:dbg`;
+            dbgNamespace += `,*:dbg`;
         }
         if(TRACE) {
-            dbgNamespace += `,${getNameSpace()}*:trc`;
+            dbgNamespace += `,*:trc`;
         }
         require("debug").enable(dbgNamespace);
     }    

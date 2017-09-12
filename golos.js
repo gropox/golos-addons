@@ -1,10 +1,27 @@
 const global = require("./global");
 const golos = require("golos-js");
-const debug = global.debug("golos");
-const info = global.debug("golos");
-const error = global.debug("golos");
-const trace = global.debug("golos");
 
+const debug = global.debug("golos");
+const info = global.info("golos");
+const error = global.error("golos");
+const trace = global.trace("golos");
+const warn = global.warn("golos");
+
+//golos.golos.config.set('websocket',global.CONFIG.golos_websocket);
+//golos.golos.config.set('address_prefix',"GLS");
+//golos.golos.config.set('chain_id', global.CONFIG.chain_id);
+
+module.exports.setWebsocket = function(ws) {
+    golos.config.set("websocket", ws);
+}
+
+module.exports.setPrefix = function(prefix) {
+    golos.config.set("address_prefix", prefix);
+}
+
+module.exports.setChainId = function(id) {
+    golos.config.set("chain_id", id);
+}
 
 var props = {};
 var lastCommitedBlock = 0;
@@ -136,14 +153,31 @@ module.exports.getUserBalance = async function(userid) {
 }
 
 async function getGolosPrice() {
-    let book = await golos.api.getOrderBookAsync(1);
-    trace("order book " + JSON.stringify(book));
+    let book = await golos.api.getOrderBookAsync("GBG", "GOLOS", 1);
+    debug("order book " + JSON.stringify(book));
+    let ask_price = 0;
+    let bid_price = 0;
+    
     if(book.asks.length > 0) {
-        return parseFloat(book.asks[0].real_price);
-    } else if(book.bids.length > 0) {
-        return parseFloat(book.bids[0].real_price);
+        ask_price = parseFloat(book.asks[0].price);
+    } 
+    if(book.bids.length > 0) {
+        bid_price = parseFloat(book.bids[0].price);
     }
-    return 1;
+
+    if(ask_price == 0 && bid_price == 0) {
+        throw "Unable to retrieve price infos!";
+    } else if(ask_price > 0 && bid_price > 0) {
+        const avg = (ask_price + bid_price) / 2;
+        debug("calculate avg price "  + ask_price + " - " + bid_price + " = " + avg.toFixed(6));
+        return avg;
+    } else if(ask_price > 0) {
+        warn("only ask_price available " + ask_price);
+        return ask_price;
+    } else {
+        warn("only bid_price available " + bid_price);
+        return bid_price;
+    }
 }
 
 async function getReputation(userid) {

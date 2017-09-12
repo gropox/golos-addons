@@ -44,7 +44,7 @@ async function scan() {
     let props = await ga.golos.getCurrentServerTimeAndBlock();
 
     let scanner = new Scanner(props.block - BLOCKS_AGO);
-    await ga.golos.scanUserHistory("eee", scanner);
+    await ga.golos.scanUserHistory("ropox", scanner);
     info("sum = " + ga.golos.convertVestingToGolos(scanner.sum));
     process.exit(0);
 }
