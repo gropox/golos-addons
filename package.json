@@ -1,6 +1,6 @@
 {
   "name": "golos-addons",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Addons for golos-js",
   "main": "index.js",
   "scripts": {
