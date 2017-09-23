@@ -259,3 +259,4 @@ module.exports.getContent = getContent;
 module.exports.getReputation = getReputation;
 module.exports.getGolosPrice = getGolosPrice;
 module.exports.golos = golos;
+module.exports.repLog10 = repLog10;
