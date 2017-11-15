@@ -101,18 +101,21 @@ function getConfigDir() {
 }
 
 function loadConfig() {
-    const fs = require("fs");
-
-    const CONFIG_DIR = getConfigDir();
-    const CONFIG_FILE = CONFIG_DIR + "/config.json";
     try {
-        if(fs.existsSync(CONFIG_FILE)) {
-            let sets = JSON.parse(fs.readFileSync(CONFIG_FILE, "utf8"));
-            for(var k in sets) CONFIG[k]=sets[k];
-        }                
-    } catch(e) {
-        console.error("unable to read config (" + CONFIG_FILE + ")");
-        console.error(e);
+        const fs = require("fs");
+
+        const CONFIG_DIR = getConfigDir();
+        const CONFIG_FILE = CONFIG_DIR + "/config.json";
+        try {
+            if (fs.existsSync(CONFIG_FILE)) {
+                let sets = JSON.parse(fs.readFileSync(CONFIG_FILE, "utf8"));
+                for (var k in sets) CONFIG[k] = sets[k];
+            }
+        } catch (e) {
+            console.error("unable to read config (" + CONFIG_FILE + ")");
+            console.error(e);
+        }
+    } catch (e) {
     }
 }
 
