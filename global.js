@@ -1,5 +1,4 @@
 const debug = require("debug");
-const fs = require("fs");
 
 let APP_NAME = "";
 
@@ -102,6 +101,8 @@ function getConfigDir() {
 }
 
 function loadConfig() {
+    const fs = require("fs");
+
     const CONFIG_DIR = getConfigDir();
     const CONFIG_FILE = CONFIG_DIR + "/config.json";
     try {

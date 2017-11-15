@@ -94,6 +94,11 @@ module.exports.minus = function(a1, a2) {
     let as1 = new Asset(a1);
     let as2 = new Asset(a2);
     as1.amount -= as2.amount;
+    if (as1.precision > as2.precision) {
+        as2.precision = as1.precision;
+    } else {
+        as1.precision = as2.precision;
+    }    
     return as1.toString();
 }
 
@@ -104,6 +109,11 @@ module.exports.plus = function(a1, a2) {
     let as1 = new Asset(a1);
     let as2 = new Asset(a2);
     as1.amount += as2.amount;
+    if (as1.precision > as2.precision) {
+        as2.precision = as1.precision;
+    } else {
+        as1.precision = as2.precision;
+    }    
     return as1.toString();
 }
 
