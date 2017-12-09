@@ -37,6 +37,31 @@ class Scanner {
     }
 }
 
+const USERS = [
+	"ropox",
+	"mommo",
+	"lotobot",
+	"bopox",
+	"torgobot",
+	"bilet2",
+	"roulette",
+	"jackpot",
+	"kazna",
+	"znation",
+	"t800",
+	"tolstoy",
+	"fixik",
+	"detective",
+	"fixit",
+	"habreplicator",
+	"parowoz",
+	"copoc",
+	"zombie",
+	"lotterybot",
+	"mafia",
+	"dbot"
+];
+
 async function scan() {
 
     const BLOCKS_AGO = ((60 * 60 * 24 * 7) / 3);
@@ -44,8 +69,11 @@ async function scan() {
     let props = await ga.golos.getCurrentServerTimeAndBlock();
 
     let scanner = new Scanner(props.block - BLOCKS_AGO);
-    await ga.golos.scanUserHistory("ropox", scanner);
-    info("sum = " + ga.golos.convertVestingToGolos(scanner.sum));
+
+    for(let acc of USERS) {
+	    await ga.golos.scanUserHistory(acc, scanner);
+	    info(`sum at ${acc} = ` + ga.golos.convertVestingToGolos(scanner.sum));
+    }
     process.exit(0);
 }
 

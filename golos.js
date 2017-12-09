@@ -94,6 +94,46 @@ async function scanUserHistory(userid, scanner) {
     }
 }
 
+async function scanUserHistoryAsync(userid, scanner) {
+
+    //scan user history backwards, and collect transfers
+    let start = -1;
+    let count = HIST_BLOCK;
+    debug("scan history, userid = " + userid);
+    while (start == -1 || start > 0) {
+        debug("\tget history start = " + start + ", count = " + count);
+        let userHistory = await golos.api.getAccountHistoryAsync(userid, start, count);
+        if (!(userHistory instanceof Array)) {
+            error("not an array");
+            return;
+        }
+
+        if (userHistory.length == 0) {
+            error(userid + " has no history");
+            return;
+        }
+        //trace("h = " + JSON.stringify(userHistory));
+        let firstReadId = userHistory[0][0];
+        trace("first id = " + firstReadId);
+        let terminate = false;
+        for (let h = 0; h < userHistory.length; h++) {
+            trace("check hist id " + userHistory[h][0] + " / " + userHistory[h][1].op[0]);
+            if (await scanner.process(userHistory[h])) {
+                if (!terminate) {
+                    terminate = true;
+                }
+            }
+        }
+        trace("terminate = " + terminate);
+        start = firstReadId - 1;
+        if (terminate || start <= 0) {
+            break;
+        }
+        count = (start > HIST_BLOCK) ? HIST_BLOCK : start;
+    }
+}
+
+
 async function getContent(userid, permlink) {
     debug("retrive content for user " + userid + "/" + permlink);
     var content = await golos.api.getContentAsync(userid, permlink);
@@ -251,6 +291,7 @@ module.exports.getExceptionCause = function(e) {
 
 module.exports.getCurrentServerTimeAndBlock = getCurrentServerTimeAndBlock;
 module.exports.scanUserHistory = scanUserHistory;
+module.exports.scanUserHistoryAsync = scanUserHistoryAsync;
 module.exports.getUserGests = getUserGests;
 module.exports.convertVerstings = convertVerstings;
 module.exports.convertGolos = convertGolos;
