@@ -90,15 +90,36 @@ module.exports.equal = function(a1, a2) {
     return as1.equal(as2);
 }
 
-module.exports.minus = function(a1, a2) {
-    let as1 = new Asset(a1);
-    let as2 = new Asset(a2);
-    as1.amount -= as2.amount;
+function adaptPrecision(as1, as2) {
     if (as1.precision > as2.precision) {
         as2.precision = as1.precision;
     } else {
         as1.precision = as2.precision;
-    }    
+    }
+}
+
+module.exports.divide = function (a1, a2) {
+    let as1 = new Asset(a1);
+    let as2 = new Asset(a2);
+    as1.amount /= as2.amount;
+    adaptPrecision(as1, as2);
+    return as1.toString();
+}
+
+module.exports.multiply = function (a1, a2) {
+    let as1 = new Asset(a1);
+    let as2 = new Asset(a2);
+    as1.amount *= as2.amount;
+    adaptPrecision(as1, as2);
+    return as1.toString();
+}
+
+
+module.exports.minus = function(a1, a2) {
+    let as1 = new Asset(a1);
+    let as2 = new Asset(a2);
+    as1.amount -= as2.amount;
+    adaptPrecision(as1, as2);
     return as1.toString();
 }
 
@@ -109,11 +130,7 @@ module.exports.plus = function(a1, a2) {
     let as1 = new Asset(a1);
     let as2 = new Asset(a2);
     as1.amount += as2.amount;
-    if (as1.precision > as2.precision) {
-        as2.precision = as1.precision;
-    } else {
-        as1.precision = as2.precision;
-    }    
+    adaptPrecision(as1, as2);
     return as1.toString();
 }
 
