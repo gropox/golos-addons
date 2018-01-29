@@ -22,7 +22,7 @@
   },
   "homepage": "https://github.com/gropox/golos-addons#readme",
   "dependencies": {
-    "basescript": "0.0.1",
+    "basescript": "0.0.3",
     "debug": "^3.0.1"
   }
 }
