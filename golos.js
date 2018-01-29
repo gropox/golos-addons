@@ -1,4 +1,4 @@
-const global = require("./global");
+const global = require("basescript");
 const golos = require("golos-js");
 
 const debug = global.debug("golos");
